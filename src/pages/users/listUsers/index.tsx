@@ -18,13 +18,27 @@ import {IconPencil, IconTrash, IconEye} from "@tabler/icons-react";
 import {useNavigate} from "react-router";
 import customTable from "../../../style/customTable";
 import paginationStyles from "../../../style/paginationStyles";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import api from "../../../services/api";
 
 
 export default function ListUsers() {
     const [deleteModal, setDeleteModal] = useState(false);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const [users, setUsers] = useState([]);
+
+    async function getUsers(){
+        const response = await api.get('/users');
+        setUsers(response.data.users);
+        console.log(response.data)
+    }
+
+    useEffect( () => {
+        getUsers()
+    }, [])
+
+
     const columns = [
         {
             name: 'Nome Completo',

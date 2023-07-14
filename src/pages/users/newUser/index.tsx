@@ -1,23 +1,27 @@
 import * as React from "react";
-import {Container, Paper, Title, Grid, TextInput,  Button, Flex, NumberInput, Select} from "@mantine/core";
+import {
+    Container,
+    Paper,
+    Title,
+    Grid,
+    TextInput,
+    Button,
+    Flex,
+    NumberInput,
+    Select,
+    PasswordInput
+} from "@mantine/core";
 import {useState} from "react";
 import { notifications } from '@mantine/notifications';
 import {IconCheck} from "@tabler/icons-react";
+import api from "../../../services/api";
 
 export default function NewUser(){
     const [userData, setUserData] = useState({});
 
-    function postUserData(){
-        console.log(userData)
-        notifications.show({
-            withCloseButton: true,
-            autoClose: 3000,
-            title: "Cadastro realizado",
-            message: 'O cadastro do usuário foi realizado com sucesso',
-            color: 'teal',
-            icon: <IconCheck />,
-            loading: false,
-        });
+    async function postUserData(){
+        const response = await api.post('/users', userData);
+        console.log(response)
     }
 
     return(
@@ -49,8 +53,8 @@ export default function NewUser(){
                             onChange={e => setUserData({...userData, gender: e})}
                             value={userData?.gender}
                             data={[
-                                { value: 'Masculino', label: 'Masculino' },
-                                { value: 'Feminino', label: 'Feminino' }
+                                { value: 'masculino', label: 'Masculino' },
+                                { value: 'feminino', label: 'Feminino' }
                             ]}
                         />
                     </Grid.Col>
@@ -97,8 +101,8 @@ export default function NewUser(){
                         <TextInput
                             placeholder="Número"
                             label="Número"
-                            onChange={e => setUserData({...userData, addressNumber: e.currentTarget.value})}
-                            value={userData?.addressNumber}
+                            onChange={e => setUserData({...userData, address_number: e.currentTarget.value})}
+                            value={userData?.address_number}
                         />
                     </Grid.Col>
 
@@ -106,8 +110,8 @@ export default function NewUser(){
                         <TextInput
                             placeholder="Bairro"
                             label="Bairro"
-                            onChange={e => setUserData({...userData, addressNeighborhood: e.currentTarget.value})}
-                            value={userData?.addressNeighborhood}
+                            onChange={e => setUserData({...userData, address_neighborhood: e.currentTarget.value})}
+                            value={userData?.address_neighborhood}
                         />
                     </Grid.Col>
 
@@ -115,8 +119,8 @@ export default function NewUser(){
                         <TextInput
                             placeholder="Cidade"
                             label="Cidade"
-                            onChange={e => setUserData({...userData, addressCity: e.currentTarget.value})}
-                            value={userData?.addressCity}
+                            onChange={e => setUserData({...userData, address_city: e.currentTarget.value})}
+                            value={userData?.address_city}
                         />
                     </Grid.Col>
 
@@ -124,8 +128,17 @@ export default function NewUser(){
                         <TextInput
                             placeholder="Estado"
                             label="Estado"
-                            onChange={e => setUserData({...userData, addressState: e.currentTarget.value})}
-                            value={userData?.addressState}
+                            onChange={e => setUserData({...userData, address_state: e.currentTarget.value})}
+                            value={userData?.address_state}
+                        />
+                    </Grid.Col>
+
+                    <Grid.Col xs={12} md={3}>
+                        <PasswordInput
+                            placeholder="Senha"
+                            label="Senha"
+                            onChange={e => setUserData({...userData, password: e.currentTarget.value})}
+                            value={userData?.password}
                         />
                     </Grid.Col>
 

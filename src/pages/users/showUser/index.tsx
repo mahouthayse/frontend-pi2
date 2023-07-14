@@ -3,22 +3,24 @@ import {Container, Paper, Title, Grid, TextInput,  NumberInput, Select} from "@m
 import {useState, useEffect} from "react";
 import {useParams} from "react-router";
 import users from "../../../data/users.json";
+import api from "../../../services/api";
 
 
 export default function ShowUser(){
     const [userData, setUserData] = useState({});
-
     let params = useParams()
     let userId = params.id;
 
-    function getTutorById(data, id) {
-        const filteredData = data.find(tutor => tutor.id === id);
-        setUserData(filteredData);
+   async function getUserById() {
+      const response = await api.get(`/users/${userId}`);
+      setUserData(response.data);
     }
 
-    useEffect(() => {
-        getTutorById(users, userId)
-    }, [])
+    useEffect( () => {
+        getUserById()
+    }, [userData])
+
+
 
     return(
         <Container fluid p="sm">
@@ -46,8 +48,8 @@ export default function ShowUser(){
                             placeholder="Selecione"
                             value={userData?.gender}
                             data={[
-                                { value: 'Masculino', label: 'Masculino' },
-                                { value: 'Feminino', label: 'Feminino' }
+                                { value: 'masculino', label: 'Masculino' },
+                                { value: 'feminino', label: 'Feminino' }
                             ]}
                         />
                     </Grid.Col>
@@ -90,7 +92,7 @@ export default function ShowUser(){
                         <TextInput
                             placeholder="Número"
                             label="Número"
-                            value={userData?.addressNumber}
+                            value={userData?.address_number}
                         />
                     </Grid.Col>
 
@@ -98,7 +100,7 @@ export default function ShowUser(){
                         <TextInput
                             placeholder="Bairro"
                             label="Bairro"
-                            value={userData?.addressNeighborhood}
+                            value={userData?.address_neighborhood}
                         />
                     </Grid.Col>
 
@@ -106,7 +108,7 @@ export default function ShowUser(){
                         <TextInput
                             placeholder="Cidade"
                             label="Cidade"
-                            value={userData?.addressCity}
+                            value={userData?.address_city}
                         />
                     </Grid.Col>
 
@@ -114,7 +116,7 @@ export default function ShowUser(){
                         <TextInput
                             placeholder="Estado"
                             label="Estado"
-                            value={userData?.addressState}
+                            value={userData?.address_state}
                         />
                     </Grid.Col>
                 </Grid>

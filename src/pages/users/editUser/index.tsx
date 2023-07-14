@@ -1,37 +1,41 @@
 import * as React from "react";
-import {Container, Paper, Title, Grid, TextInput,  Button, Flex, NumberInput, Select} from "@mantine/core";
+import {
+    Container,
+    Paper,
+    Title,
+    Grid,
+    TextInput,
+    Button,
+    Flex,
+    NumberInput,
+    Select,
+    PasswordInput
+} from "@mantine/core";
 import {useEffect, useState} from "react";
 import { notifications } from '@mantine/notifications';
 import {IconCheck} from "@tabler/icons-react";
 import {useParams} from "react-router";
 import users from "../../../data/users.json";
+import api from "../../../services/api";
 
 export default function EditUser(){
     const [userData, setUserData] = useState({});
-
     let params = useParams()
     let userId = params.id;
 
-    function getTutorById(data, id) {
-        const filteredData = data.find(tutor => tutor.id === id);
-        setUserData(filteredData);
+    async function getUserById() {
+        const response = await api.get(`/users/${userId}`);
+        setUserData(response.data);
     }
 
-    useEffect(() => {
-        getTutorById(users, userId)
+    useEffect( () => {
+        getUserById()
     }, [])
 
-    function editUserData(){
-        console.log(userData)
-        notifications.show({
-            withCloseButton: true,
-            autoClose: 3000,
-            title: "Cadastro realizado",
-            message: 'O cadastro do usuário foi realizado com sucesso',
-            color: 'teal',
-            icon: <IconCheck />,
-            loading: false,
-        });
+    async function editUserData(){
+        const response = await api.patch(`/users/${userId}`, userData);
+        console.log(response)
+
     }
 
     return(
@@ -63,8 +67,8 @@ export default function EditUser(){
                             value={userData?.gender}
                             onChange={e => setUserData({...userData, gender: e})}
                             data={[
-                                { value: 'Masculino', label: 'Masculino' },
-                                { value: 'Feminino', label: 'Feminino' }
+                                { value: 'masculino', label: 'Masculino' },
+                                { value: 'feminino', label: 'Feminino' }
                             ]}
                         />
                     </Grid.Col>
@@ -111,8 +115,8 @@ export default function EditUser(){
                         <TextInput
                             placeholder="Número"
                             label="Número"
-                            onChange={e => setUserData({...userData, addressNumber: e.currentTarget.value})}
-                            value={userData?.addressNumber}
+                            onChange={e => setUserData({...userData, address_number: e.currentTarget.value})}
+                            value={userData?.address_number}
                         />
                     </Grid.Col>
 
@@ -120,8 +124,8 @@ export default function EditUser(){
                         <TextInput
                             placeholder="Bairro"
                             label="Bairro"
-                            onChange={e => setUserData({...userData, addressNeighborhood: e.currentTarget.value})}
-                            value={userData?.addressNeighborhood}
+                            onChange={e => setUserData({...userData, address_neighborhood: e.currentTarget.value})}
+                            value={userData?.address_neighborhood}
                         />
                     </Grid.Col>
 
@@ -129,8 +133,8 @@ export default function EditUser(){
                         <TextInput
                             placeholder="Cidade"
                             label="Cidade"
-                            onChange={e => setUserData({...userData, addressCity: e.currentTarget.value})}
-                            value={userData?.addressCity}
+                            onChange={e => setUserData({...userData, address_city: e.currentTarget.value})}
+                            value={userData?.address_city}
                         />
                     </Grid.Col>
 
@@ -138,9 +142,18 @@ export default function EditUser(){
                         <TextInput
                             placeholder="Estado"
                             label="Estado"
-                            onChange={e => setUserData({...userData, addressState: e.currentTarget.value})}
-                            value={userData?.addressState}
+                            onChange={e => setUserData({...userData, address_state: e.currentTarget.value})}
+                            value={userData?.address_state}
                         />
+                    </Grid.Col>
+
+                        <Grid.Col xs={12} md={3}>
+                            <PasswordInput
+                                placeholder="Senha"
+                                label="Senha"
+                                onChange={e => setUserData({...userData, password: e.currentTarget.value})}
+                                value={userData?.password}
+                            />
                     </Grid.Col>
 
                     <Grid.Col xs={12}>
