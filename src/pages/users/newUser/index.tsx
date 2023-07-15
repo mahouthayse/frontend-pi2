@@ -133,15 +133,6 @@ export default function NewUser(){
                         />
                     </Grid.Col>
 
-                    <Grid.Col xs={12} md={3}>
-                        <PasswordInput
-                            placeholder="Senha"
-                            label="Senha"
-                            onChange={e => setUserData({...userData, password: e.currentTarget.value})}
-                            value={userData?.password}
-                        />
-                    </Grid.Col>
-
                     <Grid.Col xs={12}>
 
                         <Flex

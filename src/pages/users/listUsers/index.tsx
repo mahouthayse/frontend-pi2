@@ -20,13 +20,14 @@ import customTable from "../../../style/customTable";
 import paginationStyles from "../../../style/paginationStyles";
 import {useEffect, useState} from "react";
 import api from "../../../services/api";
-
+import { notifications } from '@mantine/notifications';
 
 export default function ListUsers() {
     const [deleteModal, setDeleteModal] = useState(false);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const [users, setUsers] = useState([]);
+    const [userId, setUserId] = useState("")
 
     async function getUsers(){
         const response = await api.get('/users');
@@ -37,6 +38,20 @@ export default function ListUsers() {
     useEffect( () => {
         getUsers()
     }, [])
+
+     function deleteUser() {
+         api.delete(`/users/${userId}`).then( response => {
+            notifications.show({
+                withCloseButton: true,
+                autoClose: 5000,
+                title: "Sucesso!",
+                message: 'Usuário deletado com sucesso.',
+                color: 'teal',
+                loading: false,
+              });
+              console.log(response)
+         })
+    }
 
 
     const columns = [
@@ -81,7 +96,10 @@ export default function ListUsers() {
                         </ThemeIcon>
                         <ThemeIcon variant="light" size="lg" radius="xl" color="#ffffff"
                                    style={{cursor: 'pointer', boxShadow: `0px 5px 10px rgba(143, 149, 178, 0.1)`}}
-                                   onClick={() => setDeleteModal(!deleteModal)}>
+                                   onClick={() => {
+                                    setUserId(row.id)
+                                    setDeleteModal(!deleteModal)
+                                   }}>
                             <IconTrash size={18} color="#FA5252"/>
                         </ThemeIcon>
                     </Group>
@@ -105,7 +123,9 @@ export default function ListUsers() {
                         deletados. Você tem certeza de que gostaria de excluir?</Text>
                     <Group position="center" mt="lg">
                         <Button variant="light" onClick={() => setDeleteModal(!deleteModal)}>Cancelar</Button>
-                        <Button>Deletar</Button>
+                        <Button onClick={() => {
+                            deleteUser()
+                        }} >Deletar</Button>
                     </Group>
                 </Modal>
 
