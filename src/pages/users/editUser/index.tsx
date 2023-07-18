@@ -34,7 +34,14 @@ export default function EditUser(){
 
     async function editUserData(){
         const response = await api.patch(`/users/${userId}`, userData);
-        console.log(response)
+        notifications.show({
+            withCloseButton: true,
+            autoClose: 5000,
+            title: "Sucesso!",
+            message: 'Usuário editado com sucesso.',
+            color: 'teal',
+            loading: false,
+        });
 
     }
 

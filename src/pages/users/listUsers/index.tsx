@@ -27,12 +27,13 @@ export default function ListUsers() {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const [users, setUsers] = useState([]);
-    const [userId, setUserId] = useState("")
+    const [userId, setUserId] = useState('');
+    const [searchItem, setSearchItem] = useState('');
+    const [filteredItems, setFilteredItems] = useState('');
 
     async function getUsers(){
         const response = await api.get('/users');
         setUsers(response.data.users);
-        console.log(response.data)
     }
 
     useEffect( () => {
@@ -49,8 +50,28 @@ export default function ListUsers() {
                 color: 'teal',
                 loading: false,
               });
-              console.log(response)
+
+             setDeleteModal(!deleteModal)
+             getUsers();
          })
+
+    }
+
+    function handleFilter(e) {
+        e.preventDefault()
+        const value = e.target.value
+        let filteredData = users.filter(item => {
+            const startsWith = item.name.toLowerCase().startsWith(value.toLowerCase()) || item.email.toLowerCase().startsWith(value.toLowerCase())
+
+            const includes =   item.name.toLowerCase().includes(value.toLowerCase()) || item.email.toLowerCase().includes(value.toLowerCase())
+            if (startsWith) {
+                return startsWith
+            } else if (!startsWith && includes) {
+                return includes
+            } else return null
+        })
+        setFilteredItems(filteredData)
+        setSearchItem(value)
     }
 
 
@@ -130,25 +151,24 @@ export default function ListUsers() {
                 </Modal>
 
                 <Paper shadow="lg" radius="lg" p="md">
-                    <Group position="apart" mb="md">
-                        <Title order={2}>Listar Usuários</Title>
-                        <Button size="md" onClick={() => navigate("/usuarios/novo")}>Cadastrar Usuário</Button>
-                    </Group>
-
                     <Grid>
-                        <Grid.Col xs={12} md={11}>
-                            <TextInput
-                                placeholder="Buscar por nome ou e-mail"
-                            />
+                        <Grid.Col xs={12}>
+                            <Title order={2}>Listar Usuários</Title>
                         </Grid.Col>
-                        <Grid.Col xs={12} md={1}>
-                            <Button size="sm" fullWidth>Buscar</Button>
+                        <Grid.Col xs={12}>
+                            <Group position="apart" mb="sm">
+                                <TextInput
+                                    placeholder="Buscar por nome ou e-mail"
+                                    onChange={e => handleFilter(e)}
+                                />
+                                <Button size="md" onClick={() => navigate("/usuarios/novo")}>Cadastrar Usuário</Button>
+                            </Group>
                         </Grid.Col>
 
                         <Grid.Col xs={12}>
                             <DataTable
                                 columns={columns}
-                                data={users}
+                                data={searchItem.length ? filteredItems : users}
                                 customStyles={customTable}
                                 pagination
                                 paginationComponentOptions={paginationStyles}
