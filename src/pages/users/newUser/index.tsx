@@ -21,7 +21,14 @@ export default function NewUser(){
 
     async function postUserData(){
         const response = await api.post('/users', userData);
-        console.log(response)
+        notifications.show({
+            withCloseButton: true,
+            autoClose: 5000,
+            title: "Sucesso!",
+            message: 'Usuário cadastrado com sucesso.',
+            color: 'teal',
+            loading: false,
+        });
     }
 
     return(
